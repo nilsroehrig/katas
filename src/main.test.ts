@@ -144,12 +144,28 @@ function makeFinalSpareFrame(rolls: FinalSpare["rolls"]): FinalSpare {
 
 function score(game: Game): number {
   return game.frames.reduce((gameScore, frame, frameIndex) => {
+    const lastFrame = game.frames.at(frameIndex - 1);
+    const secondToLastFrame = game.frames.at(frameIndex - 2);
+
     return (
       gameScore +
       frame.rolls.reduce((frameScore, roll, rollIndex) => {
-        if (game.frames[frameIndex - 1]?.type === "spare" && rollIndex === 0) {
+        if (
+          secondToLastFrame?.type === "strike" &&
+          lastFrame?.type === "strike" &&
+          rollIndex === 0
+        ) {
+          return frameScore + roll.value * 3;
+        }
+
+        if (lastFrame?.type === "strike" && rollIndex < 2) {
           return frameScore + roll.value * 2;
         }
+
+        if (lastFrame?.type === "spare" && rollIndex === 0) {
+          return frameScore + roll.value * 2;
+        }
+
         return frameScore + roll.value;
       }, 0)
     );
@@ -185,6 +201,14 @@ describe("score", () => {
     }
 
     expect(score(game)).toBe(150);
+  });
+
+  test("correctly counts a full game of strikes", () => {
+    for (let i = 0; i < 12; i++) {
+      game = roll(game, 10);
+    }
+
+    expect(score(game)).toBe(300);
   });
 });
 
