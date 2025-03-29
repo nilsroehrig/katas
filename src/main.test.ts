@@ -210,6 +210,14 @@ describe("score", () => {
 
     expect(score(game)).toBe(300);
   });
+
+  test("correctly counts a full game with 9 and fail rolls", () => {
+    for (let i = 0; i < 20; i++) {
+      game = roll(game, i % 2 ? 0 : 9);
+    }
+
+    expect(score(game)).toBe(90);
+  });
 });
 
 describe("roll", () => {
