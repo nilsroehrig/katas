@@ -67,12 +67,16 @@ function makeRoll(value: RollValue): Roll {
 }
 
 function makeFrame(rolls: Frame["rolls"]): Frame {
-  const [, secondRoll] = rolls;
+  const [firstRoll, secondRoll] = rolls;
   if (!secondRoll) {
-    return { type: "partial", rolls } as Frame;
+    return { type: "partial", rolls: [firstRoll] };
   }
 
-  return { type: "basic", rolls } as Frame;
+  if (firstRoll.value + secondRoll.value === 10) {
+    return { type: "spare", rolls: [firstRoll, secondRoll] };
+  }
+
+  return { type: "basic", rolls: [firstRoll, secondRoll] };
 }
 
 describe("roll", () => {
@@ -108,6 +112,17 @@ describe("roll", () => {
     expect(nextGame.frames).toEqual([
       firstFrame,
       { type: "partial", rolls: [makeRoll(5)] },
+    ]);
+  });
+
+  test("completes a spare frame on second roll", () => {
+    const firstRoll = makeRoll(0);
+    game.frames.push(makeFrame([firstRoll]));
+
+    const nextGame = roll(game, 10);
+
+    expect(nextGame.frames).toEqual([
+      { type: "spare", rolls: [firstRoll, makeRoll(10)] } as Frame,
     ]);
   });
 });
