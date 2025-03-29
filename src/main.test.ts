@@ -29,31 +29,16 @@ type Frame =
 type Game = { frames: Frame[] };
 
 function roll(game: Game, rollValue: RollValue): Game {
-  const [latestFrame, ...previousFrames] = game.frames.toReversed();
+  const [latestFrame] = game.frames.toReversed();
   let currentRoll = makeRoll(rollValue);
 
   if (latestFrame?.type === "partial") {
     return {
-      frames: [
-        ...previousFrames.toReversed(),
-        makeFrame([...latestFrame.rolls, currentRoll]),
-      ],
+      frames: [makeFrame([...latestFrame.rolls, currentRoll])],
     };
-  } else if (latestFrame?.type === "basic") {
+  } else if (["basic", "strike"].includes(latestFrame?.type)) {
     return {
-      frames: [
-        ...previousFrames.toReversed(),
-        latestFrame,
-        makeFrame([currentRoll]),
-      ],
-    };
-  } else if (latestFrame?.type === "strike") {
-    return {
-      frames: [
-        ...previousFrames.toReversed(),
-        latestFrame,
-        makeFrame([currentRoll]),
-      ],
+      frames: [latestFrame, makeFrame([currentRoll])],
     };
   }
 
