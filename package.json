@@ -1,0 +1,28 @@
+{
+  "name": "tdd-setup-ts",
+  "version": "1.0.0",
+  "main": "dist/index.js",
+  "scripts": {
+    "test": "vitest",
+    "test:once": "vitest run",
+    "test:coverage": "vitest run --coverage",
+    "start": "vite-node ./index.ts",
+    "build": "tsc"
+  },
+  "keywords": [],
+  "author": "Nils Röhrig",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "@tsconfig/node22": "^22.0.0",
+    "@vitest/coverage-v8": "^3.0.9",
+    "typescript": "^5.8.2",
+    "vite-node": "^3.0.7",
+    "vitest": "^3.0.9"
+  },
+  "engines": {
+    "node": "22",
+    "npm": ">=10"
+  },
+  "private": true
+}
