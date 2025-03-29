@@ -32,20 +32,14 @@ function roll(game: Game, rollValue: RollValue): Game {
   const [latestFrame, ...previousFrames] = game.frames.toReversed();
   let currentRoll = makeRoll(rollValue);
 
-  if (!latestFrame) {
-    return {
-      frames: [makeFrame([currentRoll])],
-    };
-  }
-
-  if (latestFrame.type === "partial") {
+  if (latestFrame?.type === "partial") {
     return {
       frames: [
         ...previousFrames.toReversed(),
         makeFrame([...latestFrame.rolls, currentRoll]),
       ],
     };
-  } else if (latestFrame.type === "basic") {
+  } else if (latestFrame?.type === "basic") {
     return {
       frames: [
         ...previousFrames.toReversed(),
