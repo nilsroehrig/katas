@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, test } from "vitest";
+import { afterEach, beforeEach, describe, expect, test } from "vitest";
 
 type RollValue = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10;
 type BasicRoll = { type: "roll"; value: RollValue };
@@ -60,10 +60,6 @@ function roll(game: Game, rollValue: RollValue): Game {
   return {
     frames: [makeFrame([currentRoll], remainingFrames)],
   };
-}
-
-function score(game: Game): number {
-  throw new Error("not implemented");
 }
 
 function makeRoll(value: 10): StrikeRoll;
@@ -145,6 +141,26 @@ function makeBasic(rolls: BasicFrame["rolls"]): BasicFrame {
 function makeFinalSpareFrame(rolls: FinalSpare["rolls"]): FinalSpare {
   return { type: "final-spare", rolls };
 }
+
+function score(game: Game): number {
+  return 0;
+}
+
+describe("score", () => {
+  let game: Game = { frames: [] };
+
+  afterEach(() => {
+    game = { frames: [] };
+  });
+
+  test("correctly counts a full game of failed rolls", () => {
+    for (let i = 0; i < 20; i++) {
+      game = roll(game, 0);
+    }
+
+    expect(score(game)).toBe(0);
+  });
+});
 
 describe("roll", () => {
   let game: Game;
