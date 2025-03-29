@@ -68,6 +68,10 @@ function makeRoll(value: RollValue): Roll {
 
 function makeFrame(rolls: Frame["rolls"]): Frame {
   const [firstRoll, secondRoll] = rolls;
+  if (firstRoll.type === "strike-roll") {
+    return { type: "strike", rolls: [firstRoll] };
+  }
+
   if (!secondRoll) {
     return { type: "partial", rolls: [firstRoll] };
   }
@@ -123,6 +127,13 @@ describe("roll", () => {
 
     expect(nextGame.frames).toEqual([
       { type: "spare", rolls: [firstRoll, makeRoll(10)] } as Frame,
+    ]);
+  });
+
+  test("adds a strike frame on first roll", () => {
+    const nextGame = roll(game, 10);
+    expect(nextGame.frames).toEqual([
+      { type: "strike", rolls: [{ type: "strike-roll", value: 10 }] } as Frame,
     ]);
   });
 });
