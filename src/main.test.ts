@@ -30,10 +30,11 @@ type Game = { frames: Frame[] };
 
 function roll(game: Game, rollValue: RollValue): Game {
   const [latestFrame, ...previousFrames] = game.frames.toReversed();
+  let currentRoll = makeRoll(rollValue);
 
   if (!latestFrame) {
     return {
-      frames: [makeFrame([makeRoll(rollValue)])],
+      frames: [makeFrame([currentRoll])],
     };
   }
 
@@ -41,13 +42,21 @@ function roll(game: Game, rollValue: RollValue): Game {
     return {
       frames: [
         ...previousFrames.toReversed(),
-        makeFrame([...latestFrame.rolls, makeRoll(rollValue)]),
+        makeFrame([...latestFrame.rolls, currentRoll]),
+      ],
+    };
+  } else if (latestFrame.type === "basic") {
+    return {
+      frames: [
+        ...previousFrames.toReversed(),
+        latestFrame,
+        makeFrame([currentRoll]),
       ],
     };
   }
 
   return {
-    frames: [makeFrame([makeRoll(rollValue)])],
+    frames: [makeFrame([currentRoll])],
   };
 }
 
@@ -93,6 +102,18 @@ describe("roll", () => {
 
     expect(nextGame.frames).toEqual([
       { type: "basic", rolls: [firstRoll, makeRoll(1)] } as Frame,
+    ]);
+  });
+
+  test("starts a new partial frame after a basic frame", () => {
+    const firstFrame = makeFrame([makeRoll(0), makeRoll(1)]);
+    game.frames.push(firstFrame);
+
+    const nextGame = roll(game, 5);
+
+    expect(nextGame.frames).toEqual([
+      firstFrame,
+      { type: "partial", rolls: [makeRoll(5)] },
     ]);
   });
 });
