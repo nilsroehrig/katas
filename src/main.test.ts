@@ -172,4 +172,34 @@ describe("roll", () => {
       { type: "partial", rolls: [makeRoll(2)] },
     ]);
   });
+
+  test("starts a new partial frame after two spare frames", () => {
+    const firstFrame = makeFrame([makeRoll(5), makeRoll(5)]);
+    const secondFrame = makeFrame([makeRoll(3), makeRoll(7)]);
+
+    game.frames = [firstFrame, secondFrame];
+
+    const nextGame = roll(game, 2);
+
+    expect(nextGame.frames).toEqual([
+      firstFrame,
+      secondFrame,
+      { type: "partial", rolls: [makeRoll(2)] },
+    ]);
+  });
+
+  test("starts a new partial frame after two strike frames", () => {
+    const firstFrame = makeFrame([makeRoll(10)]);
+    const secondFrame = makeFrame([makeRoll(10)]);
+
+    game.frames = [firstFrame, secondFrame];
+
+    const nextGame = roll(game, 2);
+
+    expect(nextGame.frames).toEqual([
+      firstFrame,
+      secondFrame,
+      { type: "partial", rolls: [makeRoll(2)] },
+    ]);
+  });
 });
