@@ -143,7 +143,14 @@ function makeFinalSpareFrame(rolls: FinalSpare["rolls"]): FinalSpare {
 }
 
 function score(game: Game): number {
-  return 0;
+  return game.frames.reduce((gameScore, frame) => {
+    return (
+      gameScore +
+      frame.rolls.reduce((frameScore, roll) => {
+        return frameScore + roll.value;
+      }, 0)
+    );
+  }, 0);
 }
 
 describe("score", () => {
@@ -159,6 +166,14 @@ describe("score", () => {
     }
 
     expect(score(game)).toBe(0);
+  });
+
+  test("correctly counts a full game of 1 rolls", () => {
+    for (let i = 0; i < 20; i++) {
+      game = roll(game, 1);
+    }
+
+    expect(score(game)).toBe(20);
   });
 });
 
