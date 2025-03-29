@@ -85,6 +85,7 @@ function makeFrame(rolls: Frame["rolls"], remainingFrames?: number): Frame {
   const lastFrameRuns = remainingFrames === 0;
   const hasSecondRoll = !!secondRoll;
   const hasThirdRoll = !!thirdRoll;
+  const isSpare = firstRoll.value + (secondRoll?.value ?? Infinity) === 10;
 
   if (lastFrameStarts && firstRollIsStrike) {
     return makePartialFrame([firstRoll]);
@@ -98,6 +99,14 @@ function makeFrame(rolls: Frame["rolls"], remainingFrames?: number): Frame {
     return makeFinalStrikeFrame([firstRoll, secondRoll, thirdRoll]);
   }
 
+  if (lastFrameRuns && isSpare && !hasThirdRoll) {
+    return makePartialFrame([firstRoll, secondRoll!]);
+  }
+
+  if (lastFrameRuns && isSpare && hasThirdRoll) {
+    return makeFinalSpareFrame([firstRoll, secondRoll!, thirdRoll]);
+  }
+
   if (firstRollIsStrike) {
     return makeStrike([firstRoll]);
   }
@@ -106,7 +115,7 @@ function makeFrame(rolls: Frame["rolls"], remainingFrames?: number): Frame {
     return makePartialFrame([firstRoll]);
   }
 
-  if (firstRoll.value + secondRoll.value === 10) {
+  if (isSpare) {
     return makeSpare([firstRoll, secondRoll]);
   }
 
@@ -131,6 +140,10 @@ function makeSpare(rolls: Spare["rolls"]): Spare {
 
 function makeBasic(rolls: BasicFrame["rolls"]): BasicFrame {
   return { type: "basic", rolls };
+}
+
+function makeFinalSpareFrame(rolls: FinalSpare["rolls"]): FinalSpare {
+  return { type: "final-spare", rolls };
 }
 
 describe("roll", () => {
@@ -282,6 +295,21 @@ describe("roll", () => {
           rolls: [makeRoll(10), makeRoll(5), makeRoll(4)],
         },
       ]),
+    );
+  });
+
+  test("ends the last frame with three rolls, when last frame is a spare frame", () => {
+    const frame = makeBasic([makeRoll(3), makeRoll(4)]);
+    game.frames = new Array(9).fill(frame);
+
+    let nextGame = roll(game, 5);
+    nextGame = roll(nextGame, 5);
+    nextGame = roll(nextGame, 2);
+
+    expect(nextGame.frames).toEqual(
+      game.frames.concat(
+        makeFinalSpareFrame([makeRoll(5), makeRoll(5), makeRoll(2)]),
+      ),
     );
   });
 });
