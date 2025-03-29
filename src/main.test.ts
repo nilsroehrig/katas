@@ -36,7 +36,7 @@ function roll(game: Game, rollValue: RollValue): Game {
     return {
       frames: [makeFrame([...latestFrame.rolls, currentRoll])],
     };
-  } else if (["basic", "strike"].includes(latestFrame?.type)) {
+  } else if (["basic", "spare", "strike"].includes(latestFrame?.type)) {
     return {
       frames: [latestFrame, makeFrame([currentRoll])],
     };
@@ -139,6 +139,18 @@ describe("roll", () => {
     expect(nextGame.frames).toEqual([
       strikeFrame,
       { type: "partial", rolls: [makeRoll(5)] },
+    ]);
+  });
+
+  test("starts a new partial frame after a spare frame", () => {
+    const spareFrame = makeFrame([makeRoll(0), makeRoll(10)]);
+    game.frames.push(spareFrame);
+
+    const nextGame = roll(game, 0);
+
+    expect(nextGame.frames).toEqual([
+      spareFrame,
+      { type: "partial", rolls: [makeRoll(0)] },
     ]);
   });
 });
