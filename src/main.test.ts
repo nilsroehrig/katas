@@ -47,6 +47,14 @@ function roll(game: Game, rollValue: RollValue): Game {
         makeFrame([currentRoll]),
       ],
     };
+  } else if (latestFrame?.type === "strike") {
+    return {
+      frames: [
+        ...previousFrames.toReversed(),
+        latestFrame,
+        makeFrame([currentRoll]),
+      ],
+    };
   }
 
   return {
@@ -134,6 +142,18 @@ describe("roll", () => {
     const nextGame = roll(game, 10);
     expect(nextGame.frames).toEqual([
       { type: "strike", rolls: [{ type: "strike-roll", value: 10 }] } as Frame,
+    ]);
+  });
+
+  test("starts a new partial frame after a strike frame", () => {
+    const strikeFrame = makeFrame([makeRoll(10)]);
+    game.frames.push(strikeFrame);
+
+    const nextGame = roll(game, 5);
+
+    expect(nextGame.frames).toEqual([
+      strikeFrame,
+      { type: "partial", rolls: [makeRoll(5)] },
     ]);
   });
 });
