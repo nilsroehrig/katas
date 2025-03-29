@@ -218,6 +218,17 @@ describe("score", () => {
 
     expect(score(game)).toBe(90);
   });
+
+  test("correctly counts a mixed bowling game", () => {
+    const rolls: RollValue[] = [
+      4, 3, 5, 5, 10, 7, 0, 4, 5, 1, 8, 10, 0, 1, 3, 5, 10, 8, 0,
+    ];
+    rolls.forEach((rollValue) => {
+      game = roll(game, rollValue);
+    });
+
+    expect(score(game)).toBe(107);
+  });
 });
 
 describe("roll", () => {
