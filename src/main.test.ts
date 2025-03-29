@@ -80,42 +80,57 @@ function makeRoll(
 
 function makeFrame(rolls: Frame["rolls"], remainingFrames?: number): Frame {
   const [firstRoll, secondRoll, thirdRoll] = rolls;
-  if (firstRoll.type === "strike-roll" && remainingFrames === 1) {
-    return { type: "partial", rolls: [firstRoll] };
+  const firstRollIsStrike = firstRoll.type === "strike-roll";
+  const lastFrameStarts = remainingFrames === 1;
+  const lastFrameRuns = remainingFrames === 0;
+  const hasSecondRoll = !!secondRoll;
+  const hasThirdRoll = !!thirdRoll;
+
+  if (lastFrameStarts && firstRollIsStrike) {
+    return makePartialFrame([firstRoll]);
   }
 
-  if (firstRoll.type === "strike-roll" && remainingFrames === 0 && !thirdRoll) {
-    return {
-      type: "partial",
-      rolls: secondRoll ? [firstRoll, secondRoll] : [firstRoll],
-    };
+  if (lastFrameRuns && firstRollIsStrike && !hasThirdRoll) {
+    return makePartialFrame(secondRoll ? [firstRoll, secondRoll] : [firstRoll]);
   }
 
-  if (
-    firstRoll.type === "strike-roll" &&
-    remainingFrames === 0 &&
-    secondRoll &&
-    thirdRoll
-  ) {
-    return {
-      type: "final-strike",
-      rolls: [firstRoll, secondRoll, thirdRoll],
-    };
+  if (lastFrameRuns && firstRollIsStrike && hasSecondRoll && hasThirdRoll) {
+    return makeFinalStrikeFrame([firstRoll, secondRoll, thirdRoll]);
   }
 
-  if (firstRoll.type === "strike-roll") {
-    return { type: "strike", rolls: [firstRoll] };
+  if (firstRollIsStrike) {
+    return makeStrike([firstRoll]);
   }
 
-  if (!secondRoll) {
-    return { type: "partial", rolls: [firstRoll] };
+  if (!hasSecondRoll) {
+    return makePartialFrame([firstRoll]);
   }
 
   if (firstRoll.value + secondRoll.value === 10) {
-    return { type: "spare", rolls: [firstRoll, secondRoll] };
+    return makeSpare([firstRoll, secondRoll]);
   }
 
-  return { type: "basic", rolls: [firstRoll, secondRoll] };
+  return makeBasic([firstRoll, secondRoll]);
+}
+
+function makePartialFrame(rolls: PartialFrame["rolls"]): PartialFrame {
+  return { type: "partial", rolls };
+}
+
+function makeFinalStrikeFrame(rolls: FinalStrike["rolls"]): FinalStrike {
+  return { type: "final-strike", rolls };
+}
+
+function makeStrike(rolls: Strike["rolls"]): Strike {
+  return { type: "strike", rolls };
+}
+
+function makeSpare(rolls: Spare["rolls"]): Spare {
+  return { type: "spare", rolls };
+}
+
+function makeBasic(rolls: BasicFrame["rolls"]): BasicFrame {
+  return { type: "basic", rolls };
 }
 
 describe("roll", () => {
