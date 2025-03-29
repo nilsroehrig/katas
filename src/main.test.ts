@@ -143,10 +143,13 @@ function makeFinalSpareFrame(rolls: FinalSpare["rolls"]): FinalSpare {
 }
 
 function score(game: Game): number {
-  return game.frames.reduce((gameScore, frame) => {
+  return game.frames.reduce((gameScore, frame, frameIndex) => {
     return (
       gameScore +
-      frame.rolls.reduce((frameScore, roll) => {
+      frame.rolls.reduce((frameScore, roll, rollIndex) => {
+        if (game.frames[frameIndex - 1]?.type === "spare" && rollIndex === 0) {
+          return frameScore + roll.value * 2;
+        }
         return frameScore + roll.value;
       }, 0)
     );
@@ -174,6 +177,14 @@ describe("score", () => {
     }
 
     expect(score(game)).toBe(20);
+  });
+
+  test("correctly counts a full game of spares plus 5 extra", () => {
+    for (let i = 0; i < 21; i++) {
+      game = roll(game, 5);
+    }
+
+    expect(score(game)).toBe(150);
   });
 });
 
