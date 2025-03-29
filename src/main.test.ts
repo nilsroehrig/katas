@@ -5,14 +5,21 @@ type BasicRoll = { type: "roll"; value: RollValue };
 type StrikeRoll = { type: "strike-roll"; value: 10 };
 type Roll = BasicRoll | StrikeRoll;
 
-type PartialFrame = { type: "partial"; rolls: [Roll] };
+type PartialFrame = {
+  type: "partial";
+  rolls: [Roll | StrikeRoll] | [StrikeRoll | Roll, StrikeRoll | Roll];
+};
 type BasicFrame = { type: "basic"; rolls: [Roll, Roll] };
 type Spare = { type: "spare"; rolls: [Roll, Roll] };
 type Strike = { type: "strike"; rolls: [StrikeRoll] };
 type FinalStrike = {
   type: "final-strike";
-  rolls: [StrikeRoll, Roll] | [StrikeRoll, StrikeRoll, Roll];
+  rolls:
+    | [StrikeRoll, Roll, Roll]
+    | [StrikeRoll, StrikeRoll, Roll]
+    | [StrikeRoll, StrikeRoll, StrikeRoll];
 };
+
 type FinalSpare = {
   type: "final-spare";
   rolls: [Roll, Roll, Roll] | [Roll, Roll, StrikeRoll];
@@ -35,7 +42,10 @@ function roll(game: Game, rollValue: RollValue): Game {
 
   if (latestFrame?.type === "partial") {
     return {
-      frames: [makeFrame([...latestFrame.rolls, currentRoll], remainingFrames)],
+      frames: [
+        ...previousFrames.toReversed(),
+        makeFrame([...latestFrame.rolls, currentRoll], remainingFrames),
+      ],
     };
   } else if (["basic", "spare", "strike"].includes(latestFrame?.type)) {
     return {
@@ -56,7 +66,11 @@ function score(game: Game): number {
   throw new Error("not implemented");
 }
 
-function makeRoll(value: RollValue): Roll {
+function makeRoll(value: 10): StrikeRoll;
+function makeRoll(value: RollValue): Roll;
+function makeRoll(
+  value: RollValue,
+): typeof value extends 10 ? StrikeRoll : Roll {
   if (value === 10) {
     return { type: "strike-roll", value };
   }
@@ -65,9 +79,28 @@ function makeRoll(value: RollValue): Roll {
 }
 
 function makeFrame(rolls: Frame["rolls"], remainingFrames?: number): Frame {
-  const [firstRoll, secondRoll] = rolls;
+  const [firstRoll, secondRoll, thirdRoll] = rolls;
   if (firstRoll.type === "strike-roll" && remainingFrames === 1) {
     return { type: "partial", rolls: [firstRoll] };
+  }
+
+  if (firstRoll.type === "strike-roll" && remainingFrames === 0 && !thirdRoll) {
+    return {
+      type: "partial",
+      rolls: secondRoll ? [firstRoll, secondRoll] : [firstRoll],
+    };
+  }
+
+  if (
+    firstRoll.type === "strike-roll" &&
+    remainingFrames === 0 &&
+    secondRoll &&
+    thirdRoll
+  ) {
+    return {
+      type: "final-strike",
+      rolls: [firstRoll, secondRoll, thirdRoll],
+    };
   }
 
   if (firstRoll.type === "strike-roll") {
@@ -216,6 +249,24 @@ describe("roll", () => {
 
     expect(nextGame.frames).toEqual(
       game.frames.concat({ type: "partial", rolls: [makeRoll(10)] }),
+    );
+  });
+
+  test("ends the last frame with three rolls, when last frame is a strike frame", () => {
+    const strikeFrame = makeFrame([makeRoll(10)]);
+    game.frames = new Array(9).fill(strikeFrame);
+
+    let nextGame = roll(game, 10);
+    nextGame = roll(nextGame, 5);
+    nextGame = roll(nextGame, 4);
+
+    expect(nextGame.frames).toEqual(
+      game.frames.concat([
+        {
+          type: "final-strike",
+          rolls: [makeRoll(10), makeRoll(5), makeRoll(4)],
+        },
+      ]),
     );
   });
 });
