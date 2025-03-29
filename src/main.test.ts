@@ -31,23 +31,24 @@ type Game = { frames: Frame[] };
 function roll(game: Game, rollValue: RollValue): Game {
   const [latestFrame, ...previousFrames] = game.frames.toReversed();
   let currentRoll = makeRoll(rollValue);
+  let remainingFrames = 10 - game.frames.length;
 
   if (latestFrame?.type === "partial") {
     return {
-      frames: [makeFrame([...latestFrame.rolls, currentRoll])],
+      frames: [makeFrame([...latestFrame.rolls, currentRoll], remainingFrames)],
     };
   } else if (["basic", "spare", "strike"].includes(latestFrame?.type)) {
     return {
       frames: [
         ...previousFrames.toReversed(),
         latestFrame,
-        makeFrame([currentRoll]),
+        makeFrame([currentRoll], remainingFrames),
       ],
     };
   }
 
   return {
-    frames: [makeFrame([currentRoll])],
+    frames: [makeFrame([currentRoll], remainingFrames)],
   };
 }
 
@@ -63,8 +64,12 @@ function makeRoll(value: RollValue): Roll {
   return { type: "roll", value };
 }
 
-function makeFrame(rolls: Frame["rolls"]): Frame {
+function makeFrame(rolls: Frame["rolls"], remainingFrames?: number): Frame {
   const [firstRoll, secondRoll] = rolls;
+  if (firstRoll.type === "strike-roll" && remainingFrames === 1) {
+    return { type: "partial", rolls: [firstRoll] };
+  }
+
   if (firstRoll.type === "strike-roll") {
     return { type: "strike", rolls: [firstRoll] };
   }
@@ -201,5 +206,16 @@ describe("roll", () => {
       secondFrame,
       { type: "partial", rolls: [makeRoll(2)] },
     ]);
+  });
+
+  test("starts a partial frame when last frame is a strike frame", () => {
+    const strikeFrame = makeFrame([makeRoll(10)]);
+    game.frames = new Array(9).fill(strikeFrame);
+
+    const nextGame = roll(game, 10);
+
+    expect(nextGame.frames).toEqual(
+      game.frames.concat({ type: "partial", rolls: [makeRoll(10)] }),
+    );
   });
 });
