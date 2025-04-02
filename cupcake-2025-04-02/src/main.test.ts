@@ -78,3 +78,23 @@ test("can build a bundle with 1 bundle of 2 cakes and 1 cupcake", () => {
   expect(bundle.description()).toBe("(🧁,🍪),🧁");
   expect(bundle.price()).toBe("3.33€");
 });
+
+test("can build a bundle with many bundles of bundles and many cakes", () => {
+  const bundleOfBundles = BuildBundle(
+    BuildBundle(Peanut(Chocolate(Cookie())), Chocolate(Peanut(Cupcake()))),
+    BuildBundle(Cupcake(), Chocolate(Cookie())),
+  );
+
+  const bundleOfCakes = BuildBundle(Peanut(Cupcake()), Cookie());
+
+  const bundleOfManyThings = BuildBundle(
+    Peanut(Cupcake()),
+    bundleOfBundles,
+    bundleOfCakes,
+  );
+
+  expect(bundleOfManyThings.description()).toBe(
+    "🧁 with 🥜,((🍪 with 🍫 and 🥜,🧁 with 🥜 and 🍫),(🧁,🍪 with 🍫)),(🧁 with 🥜,🍪)",
+  );
+  expect(bundleOfManyThings.price()).toBe("8.55€");
+});
