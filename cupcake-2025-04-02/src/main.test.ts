@@ -1,18 +1,23 @@
 import { expect, test } from "vitest";
-import { Cookie, Cupcake } from "./main";
+import { Chocolate, Cookie, Cupcake } from "./main";
 
-test("it should create a cupcake", () => {
+test("can create a cupcake", () => {
   const cupcake = Cupcake();
 
-  expect(cupcake.type).toBe("cake");
   expect(cupcake.name()).toBe("🧁");
-  expect(cupcake.price()).toBe("1€");
+  expect(cupcake.price()).toBe("1.00€");
 });
 
-test("it can create a cookie", () => {
+test("can create a cookie", () => {
   const cookie = Cookie();
 
-  expect(cookie.type).toBe("cake");
   expect(cookie.name()).toBe("🍪");
-  expect(cookie.price()).toBe("2€");
+  expect(cookie.price()).toBe("2.00€");
+});
+
+test("can top a Cupcake", () => {
+  const cupcakeWithChocolate = Chocolate(Cupcake());
+
+  expect(cupcakeWithChocolate.name()).toBe("🧁 with 🍫");
+  expect(cupcakeWithChocolate.price()).toBe("1.10€");
 });
