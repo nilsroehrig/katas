@@ -34,3 +34,9 @@ test("can top a Cupcake with multiple toppings", () => {
   expect(cupcakeWithChocolateAndPeanut.name()).toBe("🧁 with 🍫 and 🥜");
   expect(cupcakeWithChocolateAndPeanut.price()).toBe("1.30€");
 });
+
+test("can top a Cookie with multiple toppings", () => {
+  const cupcakeWithChocolateAndPeanut = Peanut(Chocolate(Cookie()));
+  expect(cupcakeWithChocolateAndPeanut.name()).toBe("🍪 with 🍫 and 🥜");
+  expect(cupcakeWithChocolateAndPeanut.price()).toBe("2.30€");
+});
