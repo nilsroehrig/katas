@@ -30,10 +30,9 @@ export const BuildBundle = (...contents: (Cake | Bundle)[]): Bundle => {
     description: () =>
       contents
         .map((cakeOrBundle) => {
-          if (cakeOrBundle.type === "bundle") {
-            return `(${cakeOrBundle.description()})`;
-          }
-          return cakeOrBundle.name();
+          return cakeOrBundle.type === "bundle"
+            ? `(${cakeOrBundle.description()})`
+            : cakeOrBundle.name();
         })
         .join(","),
     cost: () => contents.reduce((sum, item) => sum + item.cost(), 0),
