@@ -12,8 +12,35 @@ interface Topping {
 
 type CakeTopper = (cake: Cake) => Cake;
 
+interface Bundle {
+  type: "bundle";
+  readonly contents: (Cake | Bundle)[];
+  description: () => string;
+  cost: () => number;
+  price: () => string;
+}
+
 export const Cupcake = createCakeFactory("🧁", 100);
 export const Cookie = createCakeFactory("🍪", 200);
+
+export const BuildBundle = (...contents: (Cake | Bundle)[]): Bundle => {
+  const bundle: Bundle = {
+    type: "bundle",
+    contents,
+    description: () =>
+      contents
+        .map((cakeOrBundle) => {
+          if (cakeOrBundle.type === "bundle") {
+            return `(${cakeOrBundle.description()})`;
+          }
+          return cakeOrBundle.name();
+        })
+        .join(","),
+    cost: () => contents.reduce((sum, item) => sum + item.cost(), 0),
+    price: () => `${((bundle.cost() * 0.9) / 100).toFixed(2)}€`,
+  };
+  return bundle;
+};
 
 export const Chocolate = createCakeTopper({
   name: "🍫",

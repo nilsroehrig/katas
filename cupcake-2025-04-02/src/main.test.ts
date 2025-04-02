@@ -1,5 +1,5 @@
 import { expect, test } from "vitest";
-import { Chocolate, Cookie, Cupcake, Peanut } from "./main";
+import { BuildBundle, Chocolate, Cookie, Cupcake, Peanut } from "./main";
 
 test("can create a cupcake", () => {
   const cupcake = Cupcake();
@@ -51,4 +51,11 @@ test("order of Cookie toppings is preserved, price stays the same", () => {
   const cupcakeWithChocolateAndPeanut = Chocolate(Peanut(Cookie()));
   expect(cupcakeWithChocolateAndPeanut.name()).toBe("🍪 with 🥜 and 🍫");
   expect(cupcakeWithChocolateAndPeanut.price()).toBe("2.30€");
+});
+
+test("can build a bundle with 1 cupcake", () => {
+  const bundle = BuildBundle(Cupcake());
+
+  expect(bundle.description()).toBe("🧁");
+  expect(bundle.price()).toBe("0.90€");
 });
