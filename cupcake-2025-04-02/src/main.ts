@@ -13,13 +13,16 @@ interface Topping {
 
 type CakeTopper = (topping: Topping) => (cake: Cake) => Cake;
 
-export function Cupcake(): Cake {
-  const cost = 1;
+export const Cupcake = createCakeFactory("🧁", 1);
+export const Cookie = createCakeFactory("🍪", 2);
 
-  return {
-    type: "cake",
-    name: () => "🧁",
-    cost: () => cost,
-    price: () => `${cost}€`,
+function createCakeFactory(name: string, cost: number) {
+  return function () {
+    return {
+      type: "cake",
+      name: () => name,
+      cost: () => cost,
+      price: () => `${cost}€`,
+    };
   };
 }
