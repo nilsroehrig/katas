@@ -1,4 +1,5 @@
 interface Cake {
+  readonly type: "basic" | "topped";
   name: () => string;
   cost: () => number;
   price: () => string;
@@ -19,9 +20,15 @@ export const Chocolate = createCakeTopper({
   cost: 10,
 });
 
+export const Peanut = createCakeTopper({
+  name: "🥜",
+  cost: 20,
+});
+
 function createCakeFactory(name: string, cost: number) {
-  return function () {
+  return function (): Cake {
     return {
+      type: "basic",
       name: () => name,
       cost: () => cost,
       price: () => `${(cost / 100).toFixed(2)}€`,
@@ -31,7 +38,9 @@ function createCakeFactory(name: string, cost: number) {
 
 function createCakeTopper(topping: Topping): CakeTopper {
   return (cake) => ({
-    name: () => `${cake.name()} with ${topping.name}`,
+    type: "topped",
+    name: () =>
+      `${cake.name()} ${cake.type === "basic" ? "with" : "and"} ${topping.name}`,
     cost: () => cake.cost() + topping.cost,
     price: () => `${((cake.cost() + topping.cost) / 100).toFixed(2)}€`,
   });
