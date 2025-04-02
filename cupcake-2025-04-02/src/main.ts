@@ -35,8 +35,11 @@ export const BuildBundle = (...contents: (Cake | Bundle)[]): Bundle => {
             : cakeOrBundle.name();
         })
         .join(","),
-    cost: () => contents.reduce((sum, item) => sum + item.cost(), 0),
-    price: () => `${((bundle.cost() * 0.9) / 100).toFixed(2)}€`,
+    cost: () => {
+      const sum = contents.reduce((sum, item) => sum + item.cost(), 0);
+      return Math.floor(sum * 0.9);
+    },
+    price: () => `${(bundle.cost() / 100).toFixed(2)}€`,
   };
   return bundle;
 };
