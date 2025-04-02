@@ -21,3 +21,10 @@ test("can top a Cupcake", () => {
   expect(cupcakeWithChocolate.name()).toBe("🧁 with 🍫");
   expect(cupcakeWithChocolate.price()).toBe("1.10€");
 });
+
+test("can top a Cookie", () => {
+  const cupcakeWithChocolate = Chocolate(Cookie());
+
+  expect(cupcakeWithChocolate.name()).toBe("🍪 with 🍫");
+  expect(cupcakeWithChocolate.price()).toBe("2.10€");
+});
