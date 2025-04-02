@@ -66,3 +66,9 @@ test("can build a bundle with cupcake and 1 cookie", () => {
   expect(bundle.description()).toBe("🧁,🍪");
   expect(bundle.price()).toBe("2.70€");
 });
+
+test("can build a bundle with 2 cupcakes and 1 cookie", () => {
+  const bundle = BuildBundle(Cupcake(), Cupcake(), Cookie());
+  expect(bundle.description()).toBe("🧁,🧁,🍪");
+  expect(bundle.price()).toBe("3.60€");
+});
