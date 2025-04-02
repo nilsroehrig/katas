@@ -37,7 +37,7 @@ function createCakeFactory(name: string, cost: number) {
 }
 
 function createCakeTopper(topping: Topping): CakeTopper {
-  return (cake) => ({
+  return (cake): Cake => ({
     type: "topped",
     name: () =>
       `${cake.name()} ${cake.type === "basic" ? "with" : "and"} ${topping.name}`,
