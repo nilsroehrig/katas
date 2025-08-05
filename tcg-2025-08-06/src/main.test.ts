@@ -1,25 +1,8 @@
-import {describe, expect, test } from "vitest";
+import {describe, expect, test} from "vitest";
+import {Health} from "./domain/Health";
 
-describe("Health", () => {
-  test("should initialize with 30 points", () => {
-    const health = new Health();
-    expect(health.points).toBe(30);
-  })
-  test("should decrease points", () => {
-    const health = new Health();
-    health.decrease(10);
-    expect(health.points).toBe(20);
+describe("empty", () => {
+  test.skip("none", () => {
   })
 })
 
-export class Health {
-  private _points = 30;
-
-  decrease(amount: number): void {
-    this._points -= amount;
-  }
-
-  get points(): number {
-    return this._points;
-  }
-}
