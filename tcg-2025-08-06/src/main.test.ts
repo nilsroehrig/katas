@@ -5,10 +5,21 @@ describe("Health", () => {
     const health = new Health();
     expect(health.points).toBe(30);
   })
+  test("should decrease points", () => {
+    const health = new Health();
+    health.decrease(10);
+    expect(health.points).toBe(20);
+  })
 })
 
 export class Health {
+  private _points = 30;
+
+  decrease(amount: number): void {
+    this._points -= amount;
+  }
+
   get points(): number {
-    return 30;
+    return this._points;
   }
 }
