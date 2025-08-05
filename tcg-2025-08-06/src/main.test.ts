@@ -1,6 +1,14 @@
-import { expect, test } from "vitest";
-import { main } from "./main";
+import {describe, expect, test } from "vitest";
 
-test("it should work", () => {
-  expect(() => main()).not.toThrowError();
-});
+describe("Health", () => {
+  test("should initialize with 30 points", () => {
+    const health = new Health();
+    expect(health.points).toBe(30);
+  })
+})
+
+export class Health {
+  get points(): number {
+    return 30;
+  }
+}
