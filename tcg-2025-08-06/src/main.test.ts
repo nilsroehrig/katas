@@ -1,5 +1,5 @@
 import {describe, expect, test} from "vitest";
-import {Health} from "./domain/Health";
+import {ManaSlot} from "./domain/ManaSlot";
 
 describe("ManaSlot", () => {
   test("should initialize in empty state", () => {
@@ -21,18 +21,3 @@ describe("ManaSlot", () => {
   })
 })
 
-class ManaSlot {
-  private _empty = true;
-
-  refill(): void {
-    this._empty = false;
-  }
-
-  use(): void {
-    this._empty = true;
-  }
-
-  get empty(): boolean {
-    return this._empty;
-  }
-}
