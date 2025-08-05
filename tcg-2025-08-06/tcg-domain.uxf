@@ -1,0 +1,79 @@
+<diagram program="umletino" version="15.1"><zoom_level>11</zoom_level><element><id>UMLClass</id><coordinates><x>429</x><y>671</y><w>231</w><h>220</h></coordinates><panel_attributes>&lt;&lt;Class&gt;&gt;
+Player
+--
+-mana_slots: ManaSlot[]
+-health: PlayerHealth
+-deck: Deck
+-hand: Hand
+--
++receive_mana_slot()
++refill_mana()
++draw_card()
++take_damage(damage: Damage)
++show_hand(): Card[]
++play_card(card: Card)</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>968</x><y>693</y><w>231</w><h>110</h></coordinates><panel_attributes>&lt;&lt;Class&gt;&gt;
+ManaSlot
+--
+-empty: boolean
+--
++use()
++refill()</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>649</x><y>726</y><w>341</w><h>55</h></coordinates><panel_attributes>lt=-
+m1=1
+m2=0..10
+uses &gt;
+refills &gt;</panel_attributes><additional_attributes>10;20;290;20</additional_attributes></element><element><id>UMLClass</id><coordinates><x>968</x><y>847</y><w>231</w><h>88</h></coordinates><panel_attributes>&lt;&lt;Class&gt;&gt;
+Health
+--
+-points: int
+--
++decrease(amount: int)</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>649</x><y>770</y><w>341</w><h>154</h></coordinates><panel_attributes>lt=-
+m1=1
+m2=1
+loses &gt;</panel_attributes><additional_attributes>10;10;130;10;130;110;290;110</additional_attributes></element><element><id>UMLClass</id><coordinates><x>814</x><y>352</y><w>231</w><h>88</h></coordinates><panel_attributes>&lt;&lt;Class&gt;&gt;
+Deck
+--
+-cards: Card[]
+--
++take_random_card(): Card</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>616</x><y>429</y><w>253</w><h>264</h></coordinates><panel_attributes>lt=-
+m1=1
+m2=1
+draws from &gt;</panel_attributes><additional_attributes>10;220;10;130;200;130;200;10</additional_attributes></element><element><id>UMLClass</id><coordinates><x>22</x><y>671</y><w>231</w><h>121</h></coordinates><panel_attributes>&lt;&lt;Class&gt;&gt;
+Hand
+--
+-cards: Card[]
+--
++add_card(card: Card)
++take_card(card: Card)
++show(): Card[]</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>242</x><y>704</y><w>209</w><h>66</h></coordinates><panel_attributes>lt=-
+m1=1
+m2=1
+&lt; adds to
+&lt; takes from
+&lt; sees</panel_attributes><additional_attributes>170;20;90;20;10;20</additional_attributes></element><element><id>UMLClass</id><coordinates><x>528</x><y>198</y><w>231</w><h>88</h></coordinates><panel_attributes>&lt;&lt;Class&gt;&gt;
+Card
+--
+-damage: Damage
+--
++deal_damage(player: Player)</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>539</x><y>275</y><w>132</w><h>418</h></coordinates><panel_attributes>lt=-
+draws &gt;
+plays &gt;
+&lt; deals damage</panel_attributes><additional_attributes>10;360;10;60;100;60;100;10</additional_attributes></element><element><id>UMLClass</id><coordinates><x>209</x><y>297</y><w>220</w><h>143</h></coordinates><panel_attributes>&lt;&lt;Class&gt;&gt;
+Game
+--
+-active_player: Player
+-opponent_player: Player
+--
++end_turn()
++execute_card(card: Card)
++choose_winner(): Player | null</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>319</x><y>429</y><w>242</w><h>264</h></coordinates><panel_attributes>lt=-
+m1=1
+m2=2
+chooses as winner &gt;
+&lt; plays card
+&lt; ends turn</panel_attributes><additional_attributes>10;10;10;110;190;110;190;220</additional_attributes></element><element><id>Relation</id><coordinates><x>748</x><y>209</y><w>220</w><h>165</h></coordinates><panel_attributes>lt=-
+m1=1
+m2=0..20
+&lt; contains</panel_attributes><additional_attributes>170;130;170;20;10;20</additional_attributes></element><element><id>Relation</id><coordinates><x>88</x><y>231</y><w>462</w><h>462</h></coordinates><panel_attributes>lt=-
+m1=1
+m2=0..5
+contains &gt;</panel_attributes><additional_attributes>10;400;10;10;400;10</additional_attributes></element></diagram>
