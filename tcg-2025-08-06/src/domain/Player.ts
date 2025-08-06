@@ -4,9 +4,11 @@ import {Damage} from "./Damage";
 import {Card} from "./Card";
 import {Deck} from "./Deck";
 import {Hand} from "./Hand";
+import {Game} from "./Game";
 
 export class Player {
   private readonly _max_health: number;
+  private _game: Game | undefined;
 
   constructor(
     private _deck: Deck = new Deck([]),
@@ -49,6 +51,17 @@ export class Player {
 
   show_hand(): Card[] {
     return this._hand.show()
+  }
+
+  connect_to_game(game: Game): void {
+    this._game = game;
+  }
+
+  // TODO: implement mana cost check
+  // TODO: implement game check
+  // Todo: implement hand check
+  play_card(card: Card) {
+    this._game!.execute_card(card);
   }
 
   get max_mana(): number {

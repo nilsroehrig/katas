@@ -1,6 +1,9 @@
 import {describe, expect, test, vi} from "vitest";
 import {Player} from "./Player";
 import {Deck} from "./Deck";
+import {Card} from "./Card";
+import {Hand} from "./Hand";
+import {Game} from "./Game";
 
 describe("Game", () => {
   test("should initialize a new game", () => {
@@ -36,48 +39,25 @@ describe("Game", () => {
 
     expect(on_game_over).toHaveBeenCalledWith(winning_layer, losing_player);
   })
+
+  test("should declare the active player as winner playing a card that brings the opponent's health to 0", () => {
+    const winning_card = new Card({amount: 1});
+    const winning_hand = new Hand()
+
+    winning_hand.add_card(winning_card)
+
+    const winning_player = new Player(new Deck([]), winning_hand);
+    const losing_player = new Player();
+
+    losing_player.take_damage({amount: 29});
+
+    const on_game_over = vi.fn();
+
+    new Game(winning_player, losing_player, on_game_over);
+
+    winning_player.play_card(winning_card);
+
+    expect(on_game_over).toHaveBeenCalledWith(winning_player, losing_player);
+  })
 })
 
-class Game {
-  private _active_player: Player;
-  private _opponent_player: Player;
-
-  constructor(
-    initial_active_player: Player,
-    initial_opponent_player: Player,
-    private _on_game_over = (winner: Player, loser: Player) => {}
-  ) {
-    this._active_player = initial_active_player;
-    this._opponent_player = initial_opponent_player;
-  }
-
-  end_turn(): void {
-    const next_active_player = this._opponent_player;
-    this._opponent_player = this._active_player;
-    this._active_player = next_active_player;
-
-    this._active_player.draw_card();
-
-    this.choose_winner();
-  }
-
-  choose_winner(): Player | null {
-    if (this.active_player.remaining_health <= 0) {
-      this._on_game_over(this.opponent_player, this.active_player);
-      return this.opponent_player;
-    }
-    if (this.opponent_player.remaining_health <= 0) {
-      this._on_game_over(this.active_player, this.opponent_player);
-      return this._active_player;
-    }
-    return null;
-  }
-
-  get active_player(): Player {
-    return this._active_player;
-  }
-
-  get opponent_player(): Player {
-    return this._opponent_player;
-  }
-}
