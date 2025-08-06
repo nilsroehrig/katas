@@ -1,18 +1,17 @@
 import {describe, expect, test} from "vitest";
 import {Player} from "./Player";
 import {Card} from "./Card";
-import {Health} from "./Health";
 import {Deck} from "./Deck";
 
 describe("Player", () => {
   test("should increase mana slots when mana slot is received", () => {
-    const player = new Player();
+    const player = new Player(new Deck([]));
     player.receive_mana_slot();
     expect(player.max_mana).toBe(1);
   })
 
   test("should not receive more than 10 mana slots", () => {
-    const player = new Player();
+    const player = new Player(new Deck([]));
     for (let i = 0; i < 10; i++) {
       player.receive_mana_slot();
     }
@@ -25,7 +24,7 @@ describe("Player", () => {
   })
 
   test("should refill empty mana slots", () => {
-    const player = new Player();
+    const player = new Player(new Deck([]));
 
     for (let i = 0; i < 10; i++) {
       player.receive_mana_slot();
@@ -39,13 +38,13 @@ describe("Player", () => {
   })
 
   test("should start with 30 health points", () => {
-    const player = new Player();
+    const player = new Player(new Deck([]));
     expect(player.max_health).toBe(30);
     expect(player.remaining_health).toBe(30);
   })
 
   test("should lose health points to the amount of damage taken", () => {
-    const player = new Player();
+    const player = new Player(new Deck([]));
     player.take_damage({amount: 10});
     expect(player.remaining_health).toBe(20);
   })
