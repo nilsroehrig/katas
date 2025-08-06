@@ -32,5 +32,12 @@ describe("Deck", () => {
     const deck = new Deck([]);
     expect(() => deck.take_random_card()).toThrow("Cannot take a card from an empty deck");
   })
+
+  test("creates the default deck", () => {
+    const deck = Deck.get_default_deck();
+    expect(deck.max_cards).toBe(20);
+    expect(deck.remaining_cards).toBe(20);
+
+  });
 })
 

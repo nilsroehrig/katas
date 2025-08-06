@@ -1,6 +1,31 @@
 import {Card} from "./Card";
 
 export class Deck {
+  static get_default_deck() {
+    const damageAmountToCardAmountDict: Record<number, number> = {
+      0: 2,
+      1: 2,
+      2: 3,
+      3: 4,
+      4: 3,
+      5: 2,
+      6: 2,
+      7: 1,
+      8: 1,
+    };
+
+    const cards: Card[] = [];
+
+    for(let i = 0; i <=8; i++) {
+      const amount = damageAmountToCardAmountDict[i];
+      for(let j = 0; j < amount; j++) {
+        cards.push(new Card({amount: i}))
+      }
+    }
+
+    return new Deck(cards);
+  }
+
   private readonly _max_cards: number;
 
   constructor(private _cards: Card[]) {
