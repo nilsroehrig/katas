@@ -16,6 +16,9 @@ export class Deck {
   }
 
   take_random_card() {
+    if(!this._cards.length) {
+      throw new Error("Cannot take a card from an empty deck");
+    }
     const random_index = Math.floor(Math.random() * this._cards.length);
     return this._cards.splice(random_index, 1)[0];
   }

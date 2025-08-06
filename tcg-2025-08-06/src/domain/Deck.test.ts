@@ -27,5 +27,10 @@ describe("Deck", () => {
     expect(deck.remaining_cards).toBe(2);
     expect(deck.max_cards).toBe(3);
   })
+
+  test("should not allow taking a card if the deck is empty", () => {
+    const deck = new Deck([]);
+    expect(() => deck.take_random_card()).toThrow("Cannot take a card from an empty deck");
+  })
 })
 
