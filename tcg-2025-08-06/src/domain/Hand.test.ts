@@ -1,5 +1,6 @@
 import {describe, expect, test} from "vitest";
 import {Card} from "./Card";
+import {C} from "vitest/dist/chunks/reporters.d.CqBhtcTq";
 
 describe('Hand', () => {
   test("it should initialize with an empty hand", () => {
@@ -25,6 +26,15 @@ describe('Hand', () => {
 
     expect(() => hand.add_card(new Card({amount: 5}))).toThrow(HandOutOfBoundsError);
   })
+
+  test("should take a card from the hand", () => {
+    const hand = new Hand();
+    const card = new Card({amount: 0});
+    hand.add_card(card);
+    const takenCard = hand.take_card(card);
+    expect(takenCard).toBe(card);
+    expect(hand.show()).toHaveLength(0);
+  })
 })
 
 export class Hand {
@@ -34,11 +44,16 @@ export class Hand {
     return [...this._cards];
   }
 
-  add_card(card: Card) {
+  add_card(card: Card): void {
     if(this._cards.length >= 5) {
       throw new HandOutOfBoundsError("Cannot add more than 5 cards to the hand");
     }
     this._cards.push(card);
+  }
+
+  take_card(card: Card): Card {
+    const index = this._cards.indexOf(card);
+    return this._cards.splice(index, 1)[0];
   }
 }
 
