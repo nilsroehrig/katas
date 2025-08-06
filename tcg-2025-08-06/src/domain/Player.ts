@@ -1,12 +1,18 @@
 import {ManaSlot} from "./ManaSlot";
 import {Health} from "./Health";
 import {Damage} from "./Damage";
+import {Card} from "./Card";
+import {Deck} from "./Deck";
+import {Hand} from "./Hand";
 
 export class Player {
   private readonly _max_health: number;
 
-  constructor(private _mana_slots: ManaSlot[] = [],
-              private _health: Health = new Health()) {
+  constructor(
+    private _deck: Deck,
+    private _hand: Hand = new Hand(),
+    private _mana_slots: ManaSlot[] = [],
+    private _health: Health = new Health()) {
 
     this._max_health = this._health.points;
   }
@@ -24,6 +30,15 @@ export class Player {
 
   take_damage(damage: Damage): void {
     this._health.decrease(damage.amount);
+  }
+
+  draw_card(): void {
+    const card = this._deck.take_random_card();
+    this._hand.add_card(card);
+  }
+
+  show_hand(): Card[] {
+    return this._hand.show()
   }
 
   get max_mana(): number {
