@@ -1,6 +1,7 @@
 import {describe, expect, test} from "vitest";
 import {Player} from "./Player";
 import {Damage} from "./Damage";
+import {Card} from "./Card";
 
 describe("Card", () => {
   test("should deal the proper amount of damage", () => {
@@ -13,10 +14,3 @@ describe("Card", () => {
   })
 });
 
-class Card {
-  constructor(private _damage: Damage) {}
-
-  deal_damage(player: Player): void {
-    player.take_damage(this._damage);
-  }
-}
