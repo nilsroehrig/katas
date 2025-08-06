@@ -33,7 +33,13 @@ export class Player {
   }
 
   draw_card(): void {
-    const card = this._deck.take_random_card();
+    let card: Card;
+    try {
+      card = this._deck.take_random_card();
+    } catch(_: unknown) {
+      return this._health.decrease(1);
+    }
+
     this._hand.add_card(card);
   }
 

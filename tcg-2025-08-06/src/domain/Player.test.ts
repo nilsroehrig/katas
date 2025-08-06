@@ -66,5 +66,16 @@ describe("Player", () => {
     expect(player.show_hand()).toHaveLength(1);
 
   })
+
+  test("takes 1 damage when trying to draw a card from an empty deck", () => {
+    const deck = new Deck([]);
+    const player = new Player(deck);
+
+    player.draw_card()
+
+    expect(deck.remaining_cards).toBe(0);
+    expect(player.show_hand()).toHaveLength(0);
+    expect(player.remaining_health).toBe(29);
+  })
 });
 
