@@ -1,5 +1,6 @@
 import {describe, expect, test} from "vitest";
 import {ManaSlot} from "./domain/ManaSlot";
+import {Health} from "./domain/Health";
 
 describe("Player", () => {
   test("should increase mana slots when mana slot is received", () => {
@@ -32,10 +33,16 @@ describe("Player", () => {
 
     player.mana_slots.forEach(slot => expect(slot.empty).toBe(false))
   })
+
+  test("should start with 30 health points", () => {
+    const player = new Player();
+    expect(player.health.points).toBe(30);
+  })
 });
 
 class Player {
   private _mana_slots: ManaSlot[] = [];
+  private _health = new Health()
 
   receive_mana_slot(): void {
     if (this._mana_slots.length >= 10) {
@@ -48,7 +55,11 @@ class Player {
     this._mana_slots.forEach(slot => slot.refill());
   }
 
-  get mana_slots () {
+  get mana_slots() {
     return this._mana_slots;
+  }
+
+  get health() {
+    return this._health;
   }
 }
