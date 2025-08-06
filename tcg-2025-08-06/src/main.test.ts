@@ -6,7 +6,7 @@ describe("Player", () => {
   test("should increase mana slots when mana slot is received", () => {
     const player = new Player();
     player.receive_mana_slot();
-    expect(player.mana_slots).toHaveLength(1);
+    expect(player.max_mana).toBe(1);
   })
 
   test("should not receive more than 10 mana slots", () => {
@@ -15,11 +15,11 @@ describe("Player", () => {
       player.receive_mana_slot();
     }
 
-    expect(player.mana_slots).toHaveLength(10);
+    expect(player.max_mana).toBe(10);
 
     player.receive_mana_slot();
 
-    expect(player.mana_slots).toHaveLength(10);
+    expect(player.max_mana).toBe(10);
   })
 
   test("should refill empty mana slots", () => {
@@ -29,9 +29,11 @@ describe("Player", () => {
       player.receive_mana_slot();
     }
 
+    expect(player.available_mana).toBe(0);
+
     player.regenerate_mana();
 
-    player.mana_slots.forEach(slot => expect(slot.empty).toBe(false))
+    expect(player.available_mana).toBe(10);
   })
 
   test("should start with 30 health points", () => {
@@ -67,8 +69,12 @@ class Player {
     this._health.decrease(damage.amount);
   }
 
-  get mana_slots() {
-    return this._mana_slots;
+  get max_mana(): number {
+    return this._mana_slots.length;
+  }
+
+  get available_mana(): number {
+    return this._mana_slots.filter(slot => !slot.empty).length;
   }
 
   get health() {
