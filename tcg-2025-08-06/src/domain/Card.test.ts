@@ -6,7 +6,7 @@ import {Deck} from "./Deck";
 describe("Card", () => {
   test("should deal the proper amount of damage", () => {
     const card = new Card({amount: 5});
-    const player = new Player(new Deck([]));
+    const player = new Player();
 
     card.deal_damage(player);
 

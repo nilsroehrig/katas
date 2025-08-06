@@ -9,7 +9,7 @@ export class Player {
   private readonly _max_health: number;
 
   constructor(
-    private _deck: Deck,
+    private _deck: Deck = new Deck([]),
     private _hand: Hand = new Hand(),
     private _mana_slots: ManaSlot[] = [],
     private _health: Health = new Health()) {
