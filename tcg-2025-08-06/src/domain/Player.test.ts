@@ -2,6 +2,7 @@ import {describe, expect, test} from "vitest";
 import {Player} from "./Player";
 import {Card} from "./Card";
 import {Deck} from "./Deck";
+import {Hand} from "./Hand";
 
 describe("Player", () => {
   test("should increase mana slots when mana slot is received", () => {
@@ -66,7 +67,7 @@ describe("Player", () => {
 
   })
 
-  test("takes 1 damage when trying to draw a card from an empty deck", () => {
+  test("should take 1 damage when trying to draw a card from an empty deck", () => {
     const deck = new Deck([]);
     const player = new Player(deck);
 
@@ -75,6 +76,27 @@ describe("Player", () => {
     expect(deck.remaining_cards).toBe(0);
     expect(player.show_hand()).toHaveLength(0);
     expect(player.remaining_health).toBe(29);
+  })
+
+  test("should discard a drawn card if hand is already full", () => {
+    const deck = new Deck([
+      new Card({amount: 0}),
+    ]);
+
+    const hand = new Hand();
+    for (let i = 0; i < 5; i++) {
+      hand.add_card(new Card({amount: i}));
+    }
+
+    const player = new Player(deck, hand);
+
+    expect(player.show_hand()).toHaveLength(5);
+    expect(deck.remaining_cards).toBe(1);
+
+    player.draw_card();
+
+    expect(player.show_hand()).toHaveLength(5);
+    expect(deck.remaining_cards).toBe(0);
   })
 });
 

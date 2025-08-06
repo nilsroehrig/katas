@@ -40,7 +40,11 @@ export class Player {
       return this._health.decrease(1);
     }
 
-    this._hand.add_card(card);
+    try {
+      this._hand.add_card(card);
+    } catch(_: unknown) {
+      return;
+    }
   }
 
   show_hand(): Card[] {
