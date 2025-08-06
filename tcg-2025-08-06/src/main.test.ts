@@ -38,21 +38,27 @@ describe("Player", () => {
 
   test("should start with 30 health points", () => {
     const player = new Player();
-    expect(player.health.points).toBe(30);
+    expect(player.max_health).toBe(30);
+    expect(player.remaining_health).toBe(30);
   })
 
   test("should lose health points to the amount of damage taken", () => {
     const player = new Player();
     player.take_damage({amount: 10});
-    expect(player.health.points).toBe(20);
+    expect(player.remaining_health).toBe(20);
   })
 });
 
 type Damage = { amount: number };
 
 class Player {
-  private _mana_slots: ManaSlot[] = [];
-  private _health = new Health()
+  private readonly _max_health: number;
+
+  constructor(private _mana_slots: ManaSlot[] = [],
+              private _health: Health = new Health()) {
+
+    this._max_health = this._health.points;
+  }
 
   receive_mana_slot(): void {
     if (this._mana_slots.length >= 10) {
@@ -77,7 +83,11 @@ class Player {
     return this._mana_slots.filter(slot => !slot.empty).length;
   }
 
-  get health() {
-    return this._health;
+  get max_health() {
+    return this._max_health;
+  }
+
+  get remaining_health() {
+    return this._health.points;
   }
 }
