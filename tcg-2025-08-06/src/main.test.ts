@@ -20,6 +20,18 @@ describe("Player", () => {
 
     expect(player.mana_slots).toHaveLength(10);
   })
+
+  test("should refill empty mana slots", () => {
+    const player = new Player();
+
+    for (let i = 0; i < 10; i++) {
+      player.receive_mana_slot();
+    }
+
+    player.regenerate_mana();
+
+    player.mana_slots.forEach(slot => expect(slot.empty).toBe(false))
+  })
 });
 
 class Player {
@@ -30,6 +42,10 @@ class Player {
       return;
     }
     this._mana_slots.push(new ManaSlot());
+  }
+
+  regenerate_mana(): void {
+    this._mana_slots.forEach(slot => slot.refill());
   }
 
   get mana_slots () {
