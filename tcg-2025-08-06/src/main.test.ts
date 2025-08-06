@@ -38,7 +38,15 @@ describe("Player", () => {
     const player = new Player();
     expect(player.health.points).toBe(30);
   })
+
+  test("should lose health points to the amount of damage taken", () => {
+    const player = new Player();
+    player.take_damage({amount: 10});
+    expect(player.health.points).toBe(20);
+  })
 });
+
+type Damage = { amount: number };
 
 class Player {
   private _mana_slots: ManaSlot[] = [];
@@ -53,6 +61,10 @@ class Player {
 
   regenerate_mana(): void {
     this._mana_slots.forEach(slot => slot.refill());
+  }
+
+  take_damage(damage: Damage): void {
+    this._health.decrease(damage.amount);
   }
 
   get mana_slots() {
