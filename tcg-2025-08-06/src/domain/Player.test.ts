@@ -1,6 +1,4 @@
 import {describe, expect, test} from "vitest";
-import {ManaSlot} from "./ManaSlot";
-import {Health} from "./Health";
 import {Player} from "./Player";
 
 
