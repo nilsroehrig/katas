@@ -58,22 +58,17 @@ class Game {
 
     this._active_player.draw_card();
 
-    switch(this.choose_winner()) {
-      case this.active_player:
-        this._on_game_over(this.active_player, this.opponent_player);
-        break;
-      case this.opponent_player:
-        this._on_game_over(this.opponent_player, this.active_player);
-        break;
-    }
+    this.choose_winner();
   }
 
   choose_winner(): Player | null {
     if (this.active_player.remaining_health <= 0) {
+      this._on_game_over(this.opponent_player, this.active_player);
       return this.opponent_player;
     }
     if (this.opponent_player.remaining_health <= 0) {
-      return this.active_player;
+      this._on_game_over(this.active_player, this.opponent_player);
+      return this._active_player;
     }
     return null;
   }
